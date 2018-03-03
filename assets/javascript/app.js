@@ -1,5 +1,38 @@
 
 
+$(function(){
+  var loading = $('#loadbar').hide();
+  $(document)
+  .ajaxStart(function () {
+      loading.show();
+  }).ajaxStop(function () {
+    loading.hide();
+  });
+  
+  $("label.btn").on('click',function () {
+    var choice = $(this).find('input:radio').val();
+    $('#loadbar').show();
+    $('#quiz').fadeOut();
+    setTimeout(function(){
+         $( "#answer" ).html(  $(this).checking(choice) );      
+          $('#quiz').show();
+          $('#loadbar').fadeOut();
+         /* something else */
+    }, 1500);
+  });
+
+  $ans = 3;
+
+  $.fn.checking = function(ck) {
+      if (ck != $ans)
+          return 'INCORRECT';
+      else 
+          return 'CORRECT';
+  }; 
+});	
+
+
+
 // GLOBAL VARIABLES
 var clockRunning=false
 var intervalId;
@@ -83,7 +116,7 @@ function updateTime(){
   if (timeLeft>0){
       timeLeft--
       console.log(timeLeft)
-      $("#time").text("time remaining "+ timeLeft+" Sec")}
+      $("#Time").text("time remaining "+ timeLeft+" Sec")}
   else {
       Unanswered++
       console.log("time expired Game Over")
@@ -186,13 +219,15 @@ function BadAnswer(){
   Loses++
   //$("#time").empty()
   $("#question").text("NOPE")
-  $("#answer1").text("the good answer was: "+ allQuestions[currentQuestion].correctAnswer)
-  $("#answer2").empty()
+ $("#answer1").text("the good answer was: "+ allQuestions[currentQuestion].correctAnswer)
+ $("#answer2").text(allQuestions[currentQuestion].choices[parseInt(allQuestions[currentQuestion].correctAnswer)-1])
   $("#answer3").empty()
   $("#answer4").empty()
   setTimeout(functionTimeout, 3000)
 }
 
+
+// Need fix Bug after first Result display and start over 2 click are going in click increment 2 wins
 function Result(){
   gameOver=true
   $("#time").empty()
