@@ -1,38 +1,4 @@
 
-
-$(function(){
-  var loading = $('#loadbar').hide();
-  $(document)
-  .ajaxStart(function () {
-      loading.show();
-  }).ajaxStop(function () {
-    loading.hide();
-  });
-  
-  $("label.btn").on('click',function () {
-    var choice = $(this).find('input:radio').val();
-    $('#loadbar').show();
-    $('#quiz').fadeOut();
-    setTimeout(function(){
-         $( "#answer" ).html(  $(this).checking(choice) );      
-          $('#quiz').show();
-          $('#loadbar').fadeOut();
-         /* something else */
-    }, 1500);
-  });
-
-  $ans = 3;
-
-  $.fn.checking = function(ck) {
-      if (ck != $ans)
-          return 'INCORRECT';
-      else 
-          return 'CORRECT';
-  }; 
-});	
-
-
-
 // GLOBAL VARIABLES
 var clockRunning=false
 var intervalId;
@@ -79,6 +45,7 @@ function randomQuestion(Object){
   var rand=Math.floor((Math.random() * Object.length-1) + 1);
   currentQuestion=rand
   return rand
+  // need to improve the random function to avoid duplicate question
   // if (questionUsed.includes(rand)){
   //   randomQuestion(allQuestions)
   // }
@@ -105,9 +72,9 @@ function DisplayNewQuestion(number) {
 // SET UP TIMER FUNCTION
 
 function RunningTimer(){
-  timeLeft=60
+  timeLeft=30
   if (!clockRunning) {
-      intervalId = setInterval(updateTime, 100);
+      intervalId = setInterval(updateTime, 1000);
       clockRunning=true
     }
 }
@@ -116,7 +83,7 @@ function updateTime(){
   if (timeLeft>0){
       timeLeft--
       console.log(timeLeft)
-      $("#Time").text("time remaining "+ timeLeft+" Sec")}
+      $("#time").text("Time remaining "+ timeLeft+" Sec")}
   else {
       Unanswered++
       console.log("time expired Game Over")
@@ -206,17 +173,19 @@ switch (answer) {
 // VERIFY FUNCTION
 function GoodAnswer(){
   Wins++
+  timeLeft=30
   //$("#time").empty()
   $("#question").text("CORRECT")
   $("#answer1").empty()
   $("#answer2").empty()
   $("#answer3").empty()
   $("#answer4").empty()
-  setTimeout(functionTimeout, 1000)
+  setTimeout(functionTimeout, 3000)
 }
 
 function BadAnswer(){
   Loses++
+  timeLeft=30
   //$("#time").empty()
   $("#question").text("NOPE")
  $("#answer1").text("the good answer was: "+ allQuestions[currentQuestion].correctAnswer)
@@ -230,11 +199,12 @@ function BadAnswer(){
 // Need fix Bug after first Result display and start over 2 click are going in click increment 2 wins
 function Result(){
   gameOver=true
+  timeLeft=30
   $("#time").empty()
   $("#question").text("All Done Here is how you did")
-  $("#answer1").text("Correct Answers :"+ Wins)
-  $("#answer2").text("Incorrect Answers :"+ Loses)
-  $("#answer3").text("Unanswered :"+ Unanswered)
+  $("#answer1").text("Correct Answers : "+ Wins)
+  $("#answer2").text("Incorrect Answers : "+ Loses)
+  $("#answer3").text("Unanswered : "+ Unanswered)
   $("#answer4").text("START OVER")
 }
 
